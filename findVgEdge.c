@@ -1,7 +1,7 @@
 #include "matrix.h"
 #include "mex.h"
 #include "vg.h"
-
+#include <stdlib.h>
 int deal_vg(const mxArray *data, int length, Stack *s)
 {
     double *time_series = mxGetPr(data);
@@ -23,7 +23,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int M = (int)mxGetM(prhs[0]);
 
     Stack s;
-    mexPrintf("array length%d", M);
+    // mexPrintf("array length%d", M);
     int edge_node_number = deal_vg(prhs[0], M, &s);
 
     if (DEBUGING)
@@ -35,11 +35,13 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     // plhs[0]=mxCreateDoubleMatrix(1,M,mxREAL);
     // double* count = mxGetPr(plhs[0]);
 
-    plhs[0] = mxCreateNumericMatrix(edge_node_number, 1, mxUINT16_CLASS, 0);
-    uint16_T *left_ptr = mxGetPr(plhs[0]);
-    for (size_t i = 0; i < edge_node_number; i++)
-    {
-        left_ptr[i] = s.node_number[i] + 1;
-    }
+    plhs[0] = mxCreateNumericMatrix(edge_node_number, 1, mxINT32_CLASS, 0);
+    int32_T *left_ptr = mxGetPr(plhs[0]);
+    // for (size_t i = 0; i < edge_node_number; i++)
+    // {
+    //     left_ptr[i] = s.node_number[i] + 1;
+    // }
+
+    memcpy(left_ptr, s.node_number, sizeof(int32_T) * edge_node_number);
     free(s.node_number);
 }

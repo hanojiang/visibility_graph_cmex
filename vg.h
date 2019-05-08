@@ -1,7 +1,7 @@
 #ifndef _VG_H__
 #define _VG_H__
 #include <stdlib.h>
-#define DEBUGING 1
+#define DEBUGING 0
 typedef int status;
 // typedef struct Edge
 // {
