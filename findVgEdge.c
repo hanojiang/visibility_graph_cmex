@@ -23,6 +23,7 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     int M = (int)mxGetM(prhs[0]);
 
     Stack s;
+    stack_init(&s);
     // mexPrintf("array length%d", M);
     int edge_node_number = deal_vg(prhs[0], M, &s);
 
@@ -36,12 +37,18 @@ void mexFunction(int nlhs, mxArray *plhs[], int nrhs, const mxArray *prhs[])
     // double* count = mxGetPr(plhs[0]);
 
     plhs[0] = mxCreateNumericMatrix(edge_node_number, 1, mxINT32_CLASS, 0);
+    plhs[1] = mxCreateNumericMatrix(edge_node_number, 1, mxINT32_CLASS, 0);
+    plhs[2] = mxCreateNumericMatrix(edge_node_number, 1, mxDOUBLE_CLASS, 0);
     int32_T *left_ptr = mxGetPr(plhs[0]);
+    int32_T *right_ptr = mxGetPr(plhs[1]);
+    double *weight = mxGetPr(plhs[2]);
     // for (size_t i = 0; i < edge_node_number; i++)
     // {
     //     left_ptr[i] = s.node_number[i] + 1;
     // }
 
-    memcpy(left_ptr, s.node_number, sizeof(int32_T) * edge_node_number);
-    free(s.node_number);
+    memcpy(left_ptr, s.left_node, sizeof(int32_T) * edge_node_number);
+    memcpy(right_ptr, s.right_node, sizeof(int32_T) * edge_node_number);
+    memcpy(weight, s.edge_weight, sizeof(double) * edge_node_number);
+    stack_destroy(&s);
 }
